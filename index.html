@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>交易策略看板 2026/06/25</title>
+<title>交易策略看板 2026/06/30</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -59,15 +59,19 @@
   .disc-table tr:last-child td { border-bottom: none; }
   .disc-label { font-size: 13px; font-weight: 500; color: var(--text); width: 140px; }
   .disc-val { font-size: 14px; font-weight: 700; }
+  .val-red    { color: var(--red); }
   .val-orange { color: var(--orange); }
   .val-green  { color: var(--green); }
   .sub-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 24px; margin-top: 6px; }
   .sub-item { font-size: 12px; color: var(--neutral); font-family: var(--font-mono); }
   .sub-item span { color: var(--text); font-weight: 500; }
   .rule-list { list-style: none; padding: 0; margin: 0; }
-  .rule-list li { display: flex; align-items: flex-start; gap: 8px; font-size: 13px; color: var(--text); line-height: 1.65; }
+  .rule-list li { display: flex; align-items: flex-start; gap: 8px; font-size: 13px; color: var(--text); line-height: 1.65; margin-bottom: 6px; }
+  .rule-list li:last-child { margin-bottom: 0; }
   .rule-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--blue); margin-top: 8px; flex-shrink: 0; }
-  .watch-tag-neutral { font-family: var(--font-mono); font-size: 11px; padding: 3px 10px; border-radius: 3px; background: rgba(148,163,184,0.08); color: var(--muted); border: 1px solid rgba(148,163,184,0.15); }
+  .rule-sub { font-size: 12px; color: var(--muted); margin-top: 3px; line-height: 1.6; }
+  .watch-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+  .watch-tag { font-family: var(--font-mono); font-size: 11px; padding: 2px 9px; border-radius: 3px; background: rgba(96,165,250,0.1); color: var(--blue); border: 1px solid rgba(96,165,250,0.22); }
 
   /* Holdings table */
   .holdings-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
@@ -82,23 +86,22 @@
   .pct-red    { color: var(--red);    font-family: var(--font-mono); font-weight: 500; }
   .pct-orange { color: var(--orange); font-family: var(--font-mono); font-weight: 500; }
   .pct-neutral{ color: var(--neutral);font-family: var(--font-mono); font-weight: 500; }
-  .pct-zero   { color: var(--muted);  font-family: var(--font-mono); font-weight: 500; }
   .phase-badge { display: inline-block; font-family: var(--font-mono); font-size: 10px; padding: 2px 7px; border-radius: 3px; white-space: nowrap; }
   .phase-build { background: rgba(74,222,128,0.12);  color: var(--green);  border: 1px solid rgba(74,222,128,0.2); }
   .phase-add   { background: rgba(251,146,60,0.15);  color: var(--orange); border: 1px solid rgba(251,146,60,0.3); }
-  .phase-watch { background: rgba(96,165,250,0.10);  color: var(--blue);   border: 1px solid rgba(96,165,250,0.2); }
   .plan-text   { font-size: 12px; color: var(--neutral); line-height: 1.7; }
   .plan-orange { font-size: 12px; color: var(--orange); line-height: 1.7; }
   .plan-green  { font-size: 12px; color: var(--green);  line-height: 1.7; }
   .plan-red    { font-size: 12px; color: var(--red);    line-height: 1.7; }
   .position-num{ font-family: var(--font-mono); font-size: 12px; color: var(--text); }
   .realized { font-family: var(--font-mono); font-size: 10px; color: var(--green); }
+  .realized-neg { font-family: var(--font-mono); font-size: 10px; color: var(--red); }
+  .new-badge { font-family: var(--font-mono); font-size: 9px; padding: 1px 5px; border-radius: 3px; background: rgba(96,165,250,0.15); color: var(--blue); border: 1px solid rgba(96,165,250,0.25); margin-left: 4px; vertical-align: middle; }
 
   /* Mobile cards */
   .m-cards { display: none; padding: 12px; gap: 8px; flex-direction: column; }
   .m-card { background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; padding: 12px 14px; }
   .m-card.adv-card { border-color: rgba(251,191,36,0.2); }
-  .m-card.watch-card { opacity: 0.65; }
   .m-card-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 9px; flex-wrap: wrap; gap: 4px; }
   .m-card-name { font-weight: 500; font-size: 14px; }
   .m-card-code { font-family: var(--font-mono); font-size: 10px; color: var(--muted); margin-left: 4px; }
@@ -137,8 +140,8 @@
     <div class="header-main">個人持股交易看板</div>
   </div>
   <div class="header-meta">
-    2026 / 06 / 25 &nbsp;·&nbsp; Wed<br>
-    目前部位：48% &nbsp;·&nbsp; 持股：10 檔
+    2026 / 06 / 30 &nbsp;·&nbsp; Mon<br>
+    目前部位：約 20% &nbsp;·&nbsp; 持股：6 檔
   </div>
 </div>
 
@@ -150,9 +153,9 @@
     <span class="section-num">01</span>
     <span class="section-name">交易紀律</span>
     <div class="section-pills">
-      <span class="pill pill-orange">風險：中</span>
-      <span class="pill pill-orange">部位：中偏中低</span>
-      <span class="pill pill-neutral">持股：10 檔</span>
+      <span class="pill pill-red">風險：中高</span>
+      <span class="pill pill-neutral">部位：低</span>
+      <span class="pill pill-neutral">持股：6 檔</span>
     </div>
     <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
   </div>
@@ -160,29 +163,29 @@
     <table class="disc-table">
       <tr>
         <td class="disc-label">短期風險評估</td>
-        <td><span class="disc-val val-orange">中</span></td>
+        <td><span class="disc-val val-red">中高</span></td>
       </tr>
       <tr>
         <td class="disc-label">規劃部位</td>
-        <td><span class="disc-val val-orange">中偏向中低</span></td>
+        <td><span class="disc-val val-neutral" style="color:var(--neutral);">低</span></td>
       </tr>
       <tr>
         <td class="disc-label">目前部位</td>
         <td>
-          <span class="disc-val val-green">48%</span>
+          <span class="disc-val val-green">約 20%</span>
           <div class="sub-grid">
-            <div class="sub-item">持股 <span>68%</span></div>
-            <div class="sub-item">投顧 <span>32%</span></div>
+            <div class="sub-item">持股 <span>—</span></div>
+            <div class="sub-item">投顧 <span>—</span></div>
           </div>
         </td>
       </tr>
       <tr>
         <td class="disc-label">持股檔數</td>
         <td>
-          <span class="disc-val" style="color:var(--text)">10 檔</span>
+          <span class="disc-val" style="color:var(--text)">6 檔</span>
           <div class="sub-grid">
-            <div class="sub-item">自己 <span>6 檔</span></div>
-            <div class="sub-item">投顧 <span>4 檔</span></div>
+            <div class="sub-item">自己 <span>4 檔</span></div>
+            <div class="sub-item">投顧 <span>2 檔</span></div>
           </div>
         </td>
       </tr>
@@ -190,13 +193,26 @@
         <td class="disc-label">交易原則</td>
         <td>
           <ul class="rule-list">
-            <li><span class="rule-dot"></span><span>有賺就減低部位</span></li>
+            <li>
+              <span class="rule-dot"></span>
+              <div>
+                <span>不躁進，小部位加碼，可調整金額為 22 萬，再減半為 10 萬</span>
+                <div class="rule-sub">好的買點，似乎仍是在風險高的地方，要有好的價位，似乎就是要承擔風險？</div>
+              </div>
+            </li>
           </ul>
         </td>
       </tr>
       <tr>
         <td class="disc-label">想佈局的對象</td>
-        <td><span class="watch-tag-neutral">暫時不要增加</span></td>
+        <td>
+          <div class="watch-tags">
+            <span class="watch-tag">吉祥銓</span>
+            <span class="watch-tag">南電</span>
+            <span class="watch-tag">銘異</span>
+            <span class="watch-tag">新盛力</span>
+          </div>
+        </td>
       </tr>
     </table>
   </div>
@@ -208,9 +224,9 @@
     <span class="section-num">02</span>
     <span class="section-name">持股交易計畫</span>
     <div class="section-pills">
-      <span class="pill pill-red">金寶 18.44%</span>
-      <span class="pill pill-orange">新盛力 11.09%</span>
-      <span class="pill pill-orange">福懋科 9.74%</span>
+      <span class="pill pill-orange">群創 10.61%</span>
+      <span class="pill pill-orange">長科 11.17%</span>
+      <span class="pill pill-orange">磐亞 6.79%</span>
     </div>
     <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
   </div>
@@ -233,127 +249,77 @@
         </thead>
         <tbody>
 
-          <!-- 自己 6 檔 -->
+          <!-- 自己 4 檔 -->
           <tr class="group-divider">
-            <td colspan="8" style="font-family:var(--font-mono);font-size:10px;color:var(--blue);letter-spacing:0.1em;text-transform:uppercase;">▸ 自己持股 &nbsp;6 檔</td>
+            <td colspan="8" style="font-family:var(--font-mono);font-size:10px;color:var(--blue);letter-spacing:0.1em;text-transform:uppercase;">▸ 自己持股 &nbsp;4 檔</td>
           </tr>
           <tr>
             <td><div class="stock-name">群創</div><div class="stock-code">3481</div></td>
             <td style="color:var(--muted);font-size:12px;">5/19</td>
-            <td><span class="position-num">24,832</span></td>
-            <td class="pct-orange">3.10%</td>
+            <td><span class="position-num">84,851</span></td>
+            <td class="pct-orange">10.61%</td>
             <td style="color:var(--muted);font-size:12px;">操作中</td>
             <td style="font-size:12px;color:var(--neutral);">面板</td>
             <td><span class="phase-badge phase-add">加碼期</span></td>
             <td>
               <div class="realized" style="margin-bottom:2px;">已實現 15,818</div>
-              <div class="plan-text">持股觀望</div>
-            </td>
-          </tr>
-          <tr>
-            <td><div class="stock-name">TPK-KY</div><div class="stock-code">3673</div></td>
-            <td style="color:var(--muted);font-size:12px;">6/2</td>
-            <td><span class="position-num">89,276</span></td>
-            <td class="pct-orange">5.85%</td>
-            <td style="color:var(--muted);font-size:12px;">操作中</td>
-            <td style="font-size:12px;color:var(--neutral);">光電（觸控面板）</td>
-            <td><span class="phase-badge phase-add">加碼期</span></td>
-            <td>
-              <div class="realized" style="margin-bottom:2px;">已實現 21,580</div>
-              <div class="plan-text">保守 105 ／ 樂觀 130<br>已加碼，月線已經跌破下彎<br>再往下趨勢變數高，先出場或減碼</div>
-            </td>
-          </tr>
-          <tr>
-            <td><div class="stock-name">新盛力</div><div class="stock-code">4931</div></td>
-            <td style="color:var(--muted);font-size:12px;">6/2</td>
-            <td><span class="position-num">88,690</span></td>
-            <td class="pct-orange">11.09%</td>
-            <td style="color:var(--muted);font-size:12px;">操作中</td>
-            <td style="font-size:12px;color:var(--neutral);">電腦周邊（工業用電池）</td>
-            <td><span class="phase-badge phase-add">加碼期</span></td>
-            <td>
-              <div class="realized" style="margin-bottom:2px;">已實現 21,334</div>
-              <div class="plan-text">轉強或再加碼 100 股（OK）<br>回測再加碼 150 股（20MA 防守）</div>
-              <div class="plan-orange" style="margin-top:3px;">扣抵還剩一週</div>
+              <div class="plan-orange">高檔加碼，有點違背交易策略，頭重腳輕</div>
+              <div class="plan-text">跌破盤整區加碼單出場，過高減碼</div>
             </td>
           </tr>
           <tr>
             <td><div class="stock-name">金寶</div><div class="stock-code">2312</div></td>
             <td style="color:var(--muted);font-size:12px;">6/9</td>
-            <td><span class="position-num">147,551</span></td>
-            <td class="pct-red">18.44%</td>
+            <td><span class="position-num">35,525</span></td>
+            <td class="pct-neutral">4.44%</td>
             <td style="color:var(--muted);font-size:12px;">操作中</td>
             <td style="font-size:12px;color:var(--neutral);">電子代工、低軌</td>
             <td><span class="phase-badge phase-build">建倉期</span></td>
             <td>
+              <div class="realized-neg" style="margin-bottom:2px;">6/25 期貨部位實現 -1,863</div>
               <div class="plan-text">轉強加碼，部位上限<br>防守點不變，但今日紅K若被吃掉一半，加碼單出場</div>
             </td>
           </tr>
           <tr>
-            <td><div class="stock-name">全球傳動</div><div class="stock-code">4540</div></td>
-            <td style="color:var(--muted);font-size:12px;">6/17</td>
-            <td><span class="position-num">59,885</span></td>
-            <td class="pct-orange">7.49%</td>
+            <td>
+              <div class="stock-name">磐亞 <span class="new-badge">NEW</span></div>
+              <div class="stock-code">4707</div>
+            </td>
+            <td style="color:var(--muted);font-size:12px;">6/26</td>
+            <td><span class="position-num">54,326</span></td>
+            <td class="pct-orange">6.79%</td>
             <td style="color:var(--muted);font-size:12px;">操作中</td>
-            <td style="font-size:12px;color:var(--neutral);">軸承/滑軌</td>
+            <td style="font-size:12px;color:var(--neutral);">清潔用品</td>
             <td><span class="phase-badge phase-build">建倉</span></td>
             <td>
-              <div class="plan-text">跌破季線加碼觀察一天，未能快速站回就出場<br>轉強加碼 1,000 股</div>
+              <div class="plan-text">防守頸線，跌破加碼（原則）</div>
             </td>
           </tr>
           <tr>
-            <td><div class="stock-name">福懋科</div><div class="stock-code">8131</div></td>
-            <td style="color:var(--muted);font-size:12px;">6/23</td>
-            <td><span class="position-num">77,910</span></td>
-            <td class="pct-orange">9.74%</td>
+            <td>
+              <div class="stock-name">長科 <span class="new-badge">NEW</span></div>
+              <div class="stock-code">6548</div>
+            </td>
+            <td style="color:var(--muted);font-size:12px;">6/26</td>
+            <td><span class="position-num">89,327</span></td>
+            <td class="pct-orange">11.17%</td>
             <td style="color:var(--muted);font-size:12px;">操作中</td>
-            <td style="font-size:12px;color:var(--neutral);">IC 封測</td>
+            <td style="font-size:12px;color:var(--neutral);">半導體封測</td>
             <td><span class="phase-badge phase-build">建倉</span></td>
             <td>
-              <div class="plan-text">不能吃軌道的低點回檔，只能吃短期盤整區間低點<br>突破加碼一張，跌破退場觀望</div>
+              <div class="plan-text">防守型態低點，再破出場</div>
             </td>
           </tr>
 
-          <!-- 觀察中 -->
+          <!-- 投顧 2 檔 -->
           <tr class="group-divider">
-            <td colspan="8" style="font-family:var(--font-mono);font-size:10px;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;">▸ 觀察中（部位 0%）</td>
-          </tr>
-          <tr style="opacity:0.65;">
-            <td><div class="stock-name">微臺期</div><div class="stock-code">期貨</div></td>
-            <td style="color:var(--muted);font-size:12px;">6/23</td>
-            <td><span class="position-num" style="color:var(--muted);">0</span></td>
-            <td class="pct-zero">0.00%</td>
-            <td style="color:var(--muted);font-size:12px;">操作中</td>
-            <td style="font-size:12px;color:var(--neutral);">無</td>
-            <td><span class="phase-badge phase-watch">觀察</span></td>
-            <td>
-              <div class="plan-text">跌破 46,500 且隔日中午不站回就出場（處狂人策略）<br>轉強站上 46,700 加碼一口</div>
-            </td>
-          </tr>
-
-          <!-- 投顧 4 檔 -->
-          <tr class="group-divider">
-            <td colspan="8" style="font-family:var(--font-mono);font-size:10px;color:var(--amber);letter-spacing:0.1em;text-transform:uppercase;">▸ 投顧持股 &nbsp;4 檔</td>
-          </tr>
-          <tr>
-            <td><div class="stock-name">今國光</div><div class="stock-code">6209</div></td>
-            <td style="color:var(--muted);font-size:12px;">6/5</td>
-            <td><span class="position-num">43,912</span></td>
-            <td class="pct-neutral">4.39%</td>
-            <td style="color:var(--muted);font-size:12px;">操作中</td>
-            <td style="font-size:12px;color:var(--neutral);">—</td>
-            <td><span class="phase-badge phase-build">建倉期</span></td>
-            <td>
-              <div class="plan-text">已降低部位</div>
-              <div class="plan-red">有效跌破前低就出場</div>
-              <div class="plan-text">初跌破預計加碼一半部位<br>過高先抱著，目標價 110</div>
-            </td>
+            <td colspan="8" style="font-family:var(--font-mono);font-size:10px;color:var(--amber);letter-spacing:0.1em;text-transform:uppercase;">▸ 投顧持股 &nbsp;2 檔</td>
           </tr>
           <tr>
             <td><div class="stock-name">台達電</div><div class="stock-code">2308</div></td>
             <td style="color:var(--muted);font-size:12px;">6/10</td>
-            <td><span class="position-num">96,209</span></td>
-            <td class="pct-orange">9.62%</td>
+            <td><span class="position-num">20,278</span></td>
+            <td class="pct-neutral">2.03%</td>
             <td style="color:var(--muted);font-size:12px;">操作中</td>
             <td style="font-size:12px;color:var(--neutral);">—</td>
             <td><span class="phase-badge phase-build">建倉期</span></td>
@@ -363,22 +329,10 @@
             </td>
           </tr>
           <tr>
-            <td><div class="stock-name">聯鈞</div><div class="stock-code">3450</div></td>
-            <td style="color:var(--muted);font-size:12px;">6/17</td>
-            <td><span class="position-num">77,860</span></td>
-            <td class="pct-orange">7.79%</td>
-            <td style="color:var(--muted);font-size:12px;">操作中</td>
-            <td style="font-size:12px;color:var(--neutral);">—</td>
-            <td><span class="phase-badge phase-build">建倉期</span></td>
-            <td>
-              <div class="plan-text">續抱，回測前低加碼 1/3 部位<br>其餘等待 call 訊後應對</div>
-            </td>
-          </tr>
-          <tr>
             <td><div class="stock-name">聯茂</div><div class="stock-code">6213</div></td>
             <td style="color:var(--muted);font-size:12px;">6/18</td>
-            <td><span class="position-num">104,672</span></td>
-            <td class="pct-orange">10.47%</td>
+            <td><span class="position-num">30,794</span></td>
+            <td class="pct-neutral">3.08%</td>
             <td style="color:var(--muted);font-size:12px;">操作中</td>
             <td style="font-size:12px;color:var(--neutral);">—</td>
             <td><span class="phase-badge phase-build">建倉期</span></td>
@@ -393,76 +347,48 @@
 
     <!-- Mobile cards -->
     <div class="m-cards">
-      <div class="m-divider">▸ 自己持股 6 檔</div>
+      <div class="m-divider">▸ 自己持股 4 檔</div>
       <div class="m-card">
         <div class="m-card-head"><span><span class="m-card-name">群創</span><span class="m-card-code">3481</span></span><span class="phase-badge phase-add">加碼期</span></div>
-        <div class="m-row"><span class="m-label">買日 / 部位</span><span class="m-val">5/19 · 24,832</span></div>
-        <div class="m-row"><span class="m-label">比例</span><span class="m-val pct-orange">3.10%</span></div>
-        <div class="m-row"><span class="m-label">計畫</span><span class="m-val plan-text">已實現 15,818，持股觀望</span></div>
-      </div>
-      <div class="m-card">
-        <div class="m-card-head"><span><span class="m-card-name">TPK-KY</span><span class="m-card-code">3673</span></span><span class="phase-badge phase-add">加碼期</span></div>
-        <div class="m-row"><span class="m-label">買日 / 部位</span><span class="m-val">6/2 · 89,276</span></div>
-        <div class="m-row"><span class="m-label">比例</span><span class="m-val pct-orange">5.85%</span></div>
-        <div class="m-row"><span class="m-label">計畫</span><span class="m-val plan-text">已實現 21,580，月線跌破下彎，先出場或減碼，保守 105 / 樂觀 130</span></div>
-      </div>
-      <div class="m-card">
-        <div class="m-card-head"><span><span class="m-card-name">新盛力</span><span class="m-card-code">4931</span></span><span class="phase-badge phase-add">加碼期</span></div>
-        <div class="m-row"><span class="m-label">買日 / 部位</span><span class="m-val">6/2 · 88,690</span></div>
-        <div class="m-row"><span class="m-label">比例</span><span class="m-val pct-orange">11.09%</span></div>
-        <div class="m-row"><span class="m-label">計畫</span><span class="m-val plan-text">已實現 21,334，轉強 +100 股，回測 +150 股（20MA）</span></div>
-        <div class="m-row"><span class="m-label">注意</span><span class="m-val plan-orange">扣抵還剩一週</span></div>
+        <div class="m-row"><span class="m-label">買日 / 部位</span><span class="m-val">5/19 · 84,851</span></div>
+        <div class="m-row"><span class="m-label">比例</span><span class="m-val pct-orange">10.61%</span></div>
+        <div class="m-row"><span class="m-label">已實現</span><span class="m-val realized">15,818</span></div>
+        <div class="m-row"><span class="m-label">計畫</span><span class="m-val plan-orange">高檔加碼違背策略，跌破盤整區出場，過高減碼</span></div>
       </div>
       <div class="m-card">
         <div class="m-card-head"><span><span class="m-card-name">金寶</span><span class="m-card-code">2312</span></span><span class="phase-badge phase-build">建倉期</span></div>
-        <div class="m-row"><span class="m-label">買日 / 部位</span><span class="m-val">6/9 · 147,551</span></div>
-        <div class="m-row"><span class="m-label">比例</span><span class="m-val pct-red">18.44%</span></div>
-        <div class="m-row"><span class="m-label">計畫</span><span class="m-val plan-text">轉強加碼，部位上限，今日紅K吃掉一半則加碼單出場</span></div>
+        <div class="m-row"><span class="m-label">買日 / 部位</span><span class="m-val">6/9 · 35,525</span></div>
+        <div class="m-row"><span class="m-label">比例</span><span class="m-val pct-neutral">4.44%</span></div>
+        <div class="m-row"><span class="m-label">期貨</span><span class="m-val realized-neg">6/25 實現 -1,863</span></div>
+        <div class="m-row"><span class="m-label">計畫</span><span class="m-val plan-text">轉強加碼，紅K吃掉一半則加碼單出場</span></div>
       </div>
       <div class="m-card">
-        <div class="m-card-head"><span><span class="m-card-name">全球傳動</span><span class="m-card-code">4540</span></span><span class="phase-badge phase-build">建倉</span></div>
-        <div class="m-row"><span class="m-label">買日 / 部位</span><span class="m-val">6/17 · 59,885</span></div>
-        <div class="m-row"><span class="m-label">比例</span><span class="m-val pct-orange">7.49%</span></div>
-        <div class="m-row"><span class="m-label">計畫</span><span class="m-val plan-text">跌破季線觀察一天，不站回出場，轉強 +1,000 股</span></div>
+        <div class="m-card-head"><span><span class="m-card-name">磐亞 <span class="new-badge">NEW</span></span><span class="m-card-code">4707</span></span><span class="phase-badge phase-build">建倉</span></div>
+        <div class="m-row"><span class="m-label">買日 / 部位</span><span class="m-val">6/26 · 54,326</span></div>
+        <div class="m-row"><span class="m-label">比例</span><span class="m-val pct-orange">6.79%</span></div>
+        <div class="m-row"><span class="m-label">產業</span><span class="m-val">清潔用品</span></div>
+        <div class="m-row"><span class="m-label">計畫</span><span class="m-val plan-text">防守頸線，跌破加碼（原則）</span></div>
       </div>
       <div class="m-card">
-        <div class="m-card-head"><span><span class="m-card-name">福懋科</span><span class="m-card-code">8131</span></span><span class="phase-badge phase-build">建倉</span></div>
-        <div class="m-row"><span class="m-label">買日 / 部位</span><span class="m-val">6/23 · 77,910</span></div>
-        <div class="m-row"><span class="m-label">比例</span><span class="m-val pct-orange">9.74%</span></div>
-        <div class="m-row"><span class="m-label">計畫</span><span class="m-val plan-text">吃短期盤整低點，突破加碼一張，跌破退場觀望</span></div>
+        <div class="m-card-head"><span><span class="m-card-name">長科 <span class="new-badge">NEW</span></span><span class="m-card-code">6548</span></span><span class="phase-badge phase-build">建倉</span></div>
+        <div class="m-row"><span class="m-label">買日 / 部位</span><span class="m-val">6/26 · 89,327</span></div>
+        <div class="m-row"><span class="m-label">比例</span><span class="m-val pct-orange">11.17%</span></div>
+        <div class="m-row"><span class="m-label">產業</span><span class="m-val">半導體封測</span></div>
+        <div class="m-row"><span class="m-label">計畫</span><span class="m-val plan-text">防守型態低點，再破出場</span></div>
       </div>
 
-      <div class="m-divider" style="color:var(--muted);margin-top:4px;">▸ 觀察中（部位 0%）</div>
-      <div class="m-card watch-card">
-        <div class="m-card-head"><span><span class="m-card-name">微臺期</span><span class="m-card-code">期貨</span></span><span class="phase-badge phase-watch">觀察</span></div>
-        <div class="m-row"><span class="m-label">計畫</span><span class="m-val plan-text">跌破 46,500 不站回出場，轉強 46,700 加碼一口</span></div>
-      </div>
-
-      <div class="m-divider" style="color:var(--amber);margin-top:4px;">▸ 投顧持股 4 檔</div>
-      <div class="m-card adv-card">
-        <div class="m-card-head"><span><span class="m-card-name">今國光</span><span class="m-card-code">6209</span></span><span class="phase-badge phase-build">建倉期</span></div>
-        <div class="m-row"><span class="m-label">買日 / 部位</span><span class="m-val">6/5 · 43,912</span></div>
-        <div class="m-row"><span class="m-label">比例</span><span class="m-val pct-neutral">4.39%</span></div>
-        <div class="m-row"><span class="m-label">停損</span><span class="m-val plan-red">跌破前低就出場</span></div>
-        <div class="m-row"><span class="m-label">目標</span><span class="m-val plan-text">110，初跌破加碼一半</span></div>
-      </div>
+      <div class="m-divider" style="color:var(--amber);margin-top:4px;">▸ 投顧持股 2 檔</div>
       <div class="m-card adv-card">
         <div class="m-card-head"><span><span class="m-card-name">台達電</span><span class="m-card-code">2308</span></span><span class="phase-badge phase-build">建倉期</span></div>
-        <div class="m-row"><span class="m-label">買日 / 部位</span><span class="m-val">6/10 · 96,209</span></div>
-        <div class="m-row"><span class="m-label">比例</span><span class="m-val pct-orange">9.62%</span></div>
+        <div class="m-row"><span class="m-label">買日 / 部位</span><span class="m-val">6/10 · 20,278</span></div>
+        <div class="m-row"><span class="m-label">比例</span><span class="m-val pct-neutral">2.03%</span></div>
         <div class="m-row"><span class="m-label">計畫</span><span class="m-val plan-text">突破趨勢線加碼，回測季線加碼</span></div>
         <div class="m-row"><span class="m-label">停損</span><span class="m-val plan-red">跌破季線不拉就出場</span></div>
       </div>
       <div class="m-card adv-card">
-        <div class="m-card-head"><span><span class="m-card-name">聯鈞</span><span class="m-card-code">3450</span></span><span class="phase-badge phase-build">建倉期</span></div>
-        <div class="m-row"><span class="m-label">買日 / 部位</span><span class="m-val">6/17 · 77,860</span></div>
-        <div class="m-row"><span class="m-label">比例</span><span class="m-val pct-orange">7.79%</span></div>
-        <div class="m-row"><span class="m-label">計畫</span><span class="m-val plan-text">回測前低加碼 1/3，其餘等 call 訊</span></div>
-      </div>
-      <div class="m-card adv-card">
         <div class="m-card-head"><span><span class="m-card-name">聯茂</span><span class="m-card-code">6213</span></span><span class="phase-badge phase-build">建倉期</span></div>
-        <div class="m-row"><span class="m-label">買日 / 部位</span><span class="m-val">6/18 · 104,672</span></div>
-        <div class="m-row"><span class="m-label">比例</span><span class="m-val pct-orange">10.47%</span></div>
+        <div class="m-row"><span class="m-label">買日 / 部位</span><span class="m-val">6/18 · 30,794</span></div>
+        <div class="m-row"><span class="m-label">比例</span><span class="m-val pct-neutral">3.08%</span></div>
         <div class="m-row"><span class="m-label">計畫</span><span class="m-val plan-text">下降軌道清楚，季線不應再破</span></div>
       </div>
     </div>
@@ -483,8 +409,9 @@
   </div>
   <div class="section-body">
     <ul class="mindset-list">
-      <li class="mindset-item"><span class="mindset-dot"></span><span>持續做對的事情，對的功課、對的紀律、你的能力會慢慢累積</span></li>
-      <li class="mindset-item"><span class="mindset-dot"></span><span>現在悲觀是為了在別人悲觀時可以有樂觀的權利</span></li>
+      <li class="mindset-item"><span class="mindset-dot"></span><span>無論在哪裡下注，都是賭博，唯獨可以控制自己的心態和防守位置以及曝險部位</span></li>
+      <li class="mindset-item"><span class="mindset-dot"></span><span>沒錯，好的價位，都是風險高的地方，或許這就是取得優勢的位置，不然優勢要從哪裡生，要馬關鍵時刻，要馬勇於承擔風險（買在不確定，賣在共識）</span></li>
+      <li class="mindset-item"><span class="mindset-dot"></span><span>市場如人生，無論何時，都是跌跌撞撞的求生，迷茫與矛盾才是本質</span></li>
     </ul>
   </div>
 </div>
